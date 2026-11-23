@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifikasi & Diklat - SI DAKON KEPEGAWAIAN</title>
+    <base target="_top">
+    <!-- Google Fonts Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jsPDF & AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <!-- SheetJS (XLSX) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      :root {
+        --tvk-blue: #004d40;
+        --tvk-accent: #ffb74d;
+        --tvk-bg: #f4f7f6;
+        --font-main: 'Poppins', sans-serif;
+      }
+
+      body {
+        background-color: var(--tvk-bg);
+        font-family: var(--font-main);
+        margin: 0;
+        color: #333;
+      }
+
+      /* Indikator Loading Bar Atas */
+      #loader-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--tvk-accent);
+        z-index: 9999;
+        width: 0%;
+        transition: 0.3s;
+      }
+
+      /* Top Navigation Bar */
+      .top-nav {
+        background: rgba(0, 0, 0, 0.25);
+        padding: 10px 0;
+        color: white;
+        font-size: 0.85rem;
+        position: absolute;
+        width: 100%;
+        z-index: 20;
+      }
+
+      .top-nav a {
+        color: white;
+        text-decoration: none;
+        margin-left: 16px;
+        font-weight: 500;
+        opacity: 0.9;
+        transition: 0.3s;
+      }
+
+      .top-nav a:hover {
+        opacity: 1;
+        color: var(--tvk-accent);
+      }
+
+      /* Hero Header dengan Clip-Path Ellipse */
+      .hero-container {
+        background: linear-gradient(rgba(0, 77, 64, 0.88), rgba(0, 37, 31, 0.95)),
+                    url('https://uinsa.ac.id/wp-content/uploads/2023/08/Twin-Towers-UINSA.jpg');
+        background-size: cover;
+        background-position: center;
+        min-height: 280px;
+        padding-top: 70px;
+        padding-bottom: 85px;
+        color: white;
+        clip-path: ellipse(150% 100% at 50% 0%);
+        position: relative;
+      }
+
+      .brand-logo {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        text-decoration: none;
+        letter-spacing: -0.5px;
+      }
+
+      .brand-logo span {
+        font-weight: 300;
+        color: var(--tvk-accent);
+      }
+
+      /* Filter Panel Melayang */
+      .filter-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        margin-top: -70px;
+        position: relative;
+        z-index: 10;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      /* Kartu Statistik */
+      .stat-card {
+        background: white;
+        padding: 22px;
+        border-radius: 16px;
+        border: 1px solid #eaeaea;
+        height: 100%;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--tvk-blue), #10b981);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-card p {
+        color: #888;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        letter-spacing: 0.4px;
+      }
+
+      .stat-card h3 {
+        font-weight: 800;
+        font-size: 2.1rem;
+        margin: 0;
+        color: var(--tvk-blue);
+      }
+
+      /* Container Tabel Utama */
+      .card-white {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        border: 1px solid #eaeaea;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
+      }
+
+      table.dataTable thead th {
+        background: #f8f9fa;
+        color: var(--tvk-blue);
+        white-space: nowrap !important;
+        padding: 14px !important;
+        border-bottom: 2px solid #eee !important;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      table.dataTable tbody td {
+        vertical-align: middle;
+        padding: 12px 14px !important;
+        font-size: 0.85rem;
+      }
+
+      .badge-jenis {
+        background: #e0f2f1;
+        color: #004d40;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.72rem;
+        display: inline-block;
+        white-space: nowrap;
+      }
+
+      .btn-emerald {
+        background: var(--tvk-blue);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 9px 22px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.3s;
+      }
+
+      .btn-emerald:hover {
+        background: #00332b;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .modal-form-header {
+        background: var(--tvk-blue);
+        color: white;
+        padding: 1.25rem 1.75rem;
+      }
+
+      /* Action Group Berkas Sertifikat */
+      .cert-action-group {
+        display: inline-flex;
+        align-items: center;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 3px;
+        gap: 4px;
+      }
+
+      .btn-cert-view {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 11px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #004d40;
+        background: transparent;
+        text-decoration: none;
+        transition: 0.2s;
+      }
+
+      .btn-cert-view:hover {
+        background: #e0f2f1;
+        color: #00332b;
+      }
+
+      .btn-cert-dl {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #059669, #004d40);
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(5, 150, 105, 0.25);
+        transition: 0.2s;
+      }
+
+      .btn-cert-dl:hover {
+        color: #ffffff;
+        filter: brightness(1.06);
+        transform: translateY(-1px);
+      }
+
+      /* Kotak Status Folder Kolom Dokumen */
+      .folder-status-box {
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        margin-top: 8px;
+        display: none;
+      }
+
+      .folder-status-ok {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #065f46;
+        display: block;
+      }
+
+      .folder-status-smartchip {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        display: block;
+      }
+
+      .folder-status-warn {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
+        display: block;
+      }
+    </style>
+</head>
+<body>
+
+<!-- Loader Bar -->
+<div id="loader-bar"></div>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>Aplikasi SI DAKON KEPEGAWAIAN</div>
+    <div class="d-flex align-items-center flex-wrap gap-2">
+      <a href="index.html"><i class="fas fa-arrow-left me-1"></i>Kembali ke Beranda</a>
+      <button type="button" id="btnToggleAdmin" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-0 ms-2" style="font-size: 0.75rem;" onclick="toggleAdminSession()">
+        <i class="fas fa-user-lock me-1"></i>Admin Mode
+      </button>
+      <span id="adminBadge" class="ms-2 fw-bold text-warning" style="display:none;">
+        <i class="fas fa-check-circle me-1"></i>ADMIN MODE
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Hero Header -->
+<div class="hero-container">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <a href="index.html" class="brand-logo">Aplikasi<span> SI DAKON</span></a>
+        <p class="mb-0 mt-1 text-white-50 small">Manajemen Sertifikasi, Pelatihan, Seminar &amp; Pengembangan Kompetensi Pegawai</p>
+      </div>
+      <!-- Tombol Aksi Sejajar -->
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-light rounded-pill px-3 fw-semibold btn-sm" onclick="bukaRekapAnalisis()">
+          <i class="fas fa-chart-pie text-success me-1"></i> Rekap &amp; Analisis
+        </button>
+        <button class="btn btn-light rounded-pill px-3 fw-semibold btn-sm" onclick="cetakPDFSertifikasi()">
+          <i class="fas fa-file-pdf text-danger me-1"></i> Cetak PDF
+        </button>
+        <button id="btnTemplateSertifikasi" class="btn btn-outline-light rounded-pill px-3 fw-semibold btn-sm" style="display:none;" onclick="downloadTemplateSertifikasiExcel()">
+          <i class="fas fa-file-excel me-1"></i> Template Excel
+        </button>
+        <button id="btnImportSertifikasi" class="btn btn-success rounded-pill px-3 fw-semibold btn-sm" style="display:none;" onclick="$('#importSertifikasiFile').click()">
+          <i class="fas fa-file-upload me-1"></i> Import Excel
+        </button>
+        <input type="file" id="importSertifikasiFile" class="d-none" accept=".xlsx,.xls" onchange="handleImportSertifikasiExcel(this)">
+        <button id="btnInputSertifikasi" class="btn btn-warning rounded-pill px-4 fw-bold btn-sm text-dark" style="display:none;" onclick="bukaModalTambah()">
+          <i class="fas fa-plus me-1"></i> Input Sertifikasi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Container -->
+<div class="container pb-5">
+  <!-- Filter Panel -->
+  <div class="filter-panel mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label small fw-bold text-muted mb-1">PENCARIAN CEPAT</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+          <input type="text" id="filterSearch" class="form-control border-start-0" placeholder="Cari Nama Pegawai, NIP, Judul Diklat, Nomor...">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold text-muted mb-1">JENIS KEGIATAN</label>
+        <select id="filterJenis" class="form-select">
+          <option value="">Semua Jenis</option>
+          <option value="Sertifikat Pendidik">Sertifikat Pendidik (Serdos)</option>
+          <option value="Diklat Teknis">Diklat Teknis</option>
+          <option value="Diklat Kepemimpinan">Diklat Kepemimpinan</option>
+          <option value="Workshop / Bimtek">Workshop / Bimtek</option>
+          <option value="Seminar / Konferensi">Seminar / Konferensi</option>
+          <option value="Sertifikasi Kompetensi">Sertifikasi Kompetensi</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small fw-bold text-muted mb-1">TAHUN</label>
+        <select id="filterTahun" class="form-select">
+          <option value="">Semua Tahun</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary w-100 rounded-3" onclick="resetFilter()">
+          <i class="fas fa-sync-alt me-1"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistik Ringkas (4 Kartu) -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card">
+        <p>Total Sertifikat</p>
+        <h3 id="stat-total-sertifikat">0</h3>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card">
+        <p>Pegawai Tersertifikasi</p>
+        <h3 id="stat-total-pegawai" style="color: #00796b;">0</h3>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card">
+        <p>Akumulasi Jam Pelajaran</p>
+        <h3 id="stat-total-jp" style="color: #f57c00;">0 JP</h3>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card">
+        <p>Kegiatan Tahun Ini</p>
+        <h3 id="stat-tahun-ini" style="color: #0288d1;">0</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel Riwayat Sertifikasi -->
+  <div class="card-white">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-3 border-bottom gap-2">
+      <div>
+        <h5 class="fw-bold m-0" style="color: var(--tvk-blue);">Riwayat Sertifikasi &amp; Diklat Pegawai</h5>
+        <small class="text-muted">Arsip digital sertifikat diunggah langsung ke folder Google Drive masing-masing pegawai pada kolom <b>Dokumen</b> Sheet <b>DataPegawai</b></small>
+      </div>
+      <button class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="muatSemuaData(true)">
+        <i class="fas fa-rotate me-1"></i> Segarkan Data
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table id="sertifikasiTable" class="table table-hover w-100">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Pegawai (Nama &amp; NIP)</th>
+            <th>Jenis</th>
+            <th>Judul Kegiatan &amp; Nomor</th>
+            <th>Penyelenggara</th>
+            <th>Tanggal</th>
+            <th class="text-center">JP</th>
+            <th class="text-center">Berkas &amp; Download</th>
+            <th class="text-center" id="th-aksi-sertifikat">Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah / Edit Sertifikasi -->
+<div class="modal fade" id="modalSertifikat" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+      <form id="formSertifikat">
+        <input type="hidden" id="srt_id">
+        <input type="hidden" id="srt_existing_link">
+        <input type="hidden" id="srt_folder_url" value="">
+        <input type="hidden" id="srt_folder_id" value="">
+        <input type="hidden" id="srt_dokumen_raw" value="">
+
+        <div class="modal-form-header d-flex justify-content-between align-items-center">
+          <h5 class="m-0 fw-bold" id="modalSertifikatTitle"><i class="fas fa-award me-2"></i>Input Riwayat Sertifikasi / Diklat</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <!-- Pencarian Pegawai dari Sheet DataPegawai -->
+            <div class="col-md-12">
+              <label class="form-label small fw-bold text-muted">Ketik Nama atau NIP Pegawai (Sheet DataPegawai) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="fas fa-user-search text-success"></i></span>
+                <input type="text" id="srt_pegawai_search" list="datalistPegawai" class="form-control" placeholder="Ketik minimal 3 huruf nama atau NIP..." autocomplete="off" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="resetPilihanPegawai(true)" title="Hapus Pilihan"><i class="fas fa-times"></i></button>
+              </div>
+              <datalist id="datalistPegawai"></datalist>
+              <!-- Indikator Status Folder Kolom Dokumen Sheet DataPegawai -->
+              <div id="srt_folder_info" class="folder-status-box"></div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted">NIP</label>
+              <input type="text" id="srt_nip" class="form-control bg-light" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted">Nama Pegawai</label>
+              <input type="text" id="srt_nama" class="form-control bg-light" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted">Jenis Kegiatan <span class="text-danger">*</span></label>
+              <select id="srt_jenis" class="form-select" required>
+                <option value="Sertifikat Pendidik">Sertifikat Pendidik (Serdos)</option>
+                <option value="Diklat Teknis">Diklat Teknis</option>
+                <option value="Diklat Kepemimpinan">Diklat Kepemimpinan</option>
+                <option value="Workshop / Bimtek">Workshop / Bimtek</option>
+                <option value="Seminar / Konferensi">Seminar / Konferensi</option>
+                <option value="Sertifikasi Kompetensi">Sertifikasi Kompetensi</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted">Nomor Sertifikat <span class="text-danger">*</span></label>
+              <input type="text" id="srt_nomor" class="form-control" placeholder="Contoh: 1234/UN.07/KP.02/2026" required>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label small fw-bold text-muted">Judul Sertifikasi / Diklat <span class="text-danger">*</span></label>
+              <input type="text" id="srt_judul" class="form-control" placeholder="Masukkan nama lengkap pelatihan / diklat / sertifikasi" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted">Instansi Penyelenggara <span class="text-danger">*</span></label>
+              <input type="text" id="srt_penyelenggara" class="form-control" placeholder="Contoh: Pusdiklat Kemenag / LAN RI" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold text-muted">Tanggal Sertifikat <span class="text-danger">*</span></label>
+              <input type="date" id="srt_tanggal" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold text-muted">Jumlah JP</label>
+              <input type="number" id="srt_jp" class="form-control" min="0" value="0">
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label small fw-bold text-muted">Unggah Berkas Sertifikat (PDF / JPG / PNG, Maksimal 5MB)</label>
+              <input type="file" id="srt_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+              <div id="srt_existing_file_note" class="form-text text-muted small mt-1"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-light border-top text-end">
+          <button type="button" class="btn btn-link text-muted text-decoration-none" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-emerald px-4"><i class="fas fa-save me-2"></i>Simpan Riwayat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts: jQuery, Bootstrap 5, DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+const SCRIPT_URL_BOS = "https://script.google.com/macros/s/AKfycby23aF4UE_2GGFdgFISf78RkHfZBDhV8Abpvhj_XoSHjI4QorVxPPNl0VMXKw-1S_H-/exec";
+const PEGAWAI_CACHE_KEY = 'si_dakon_pegawai_cache_v1';
+
+let daftarPegawai = [];
+let dataSertifikasi = [];
+let dtSertifikasi = null;
+
+/**
+ * Mengecek validitas sesi login Admin di localStorage (batas 1 jam, selaras dengan index.html)
+ */
+function cekStatusAdmin() {
+  try {
+    const session = localStorage.getItem('si_ida_session') === 'true';
+    const timestamp = parseInt(localStorage.getItem('si_ida_timestamp') || '0', 10);
+    const satuJam = 60 * 60 * 1000;
+    if (!session) return false;
+    if (timestamp && (Date.now() - timestamp > satuJam)) {
+      localStorage.removeItem('si_ida_session');
+      localStorage.removeItem('si_ida_timestamp');
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+let isAdmin = cekStatusAdmin();
+
+function perbaruiTampilanAdmin() {
+  isAdmin = cekStatusAdmin();
+  if (isAdmin) {
+    $('#adminBadge, #btnInputSertifikasi, #btnTemplateSertifikasi, #btnImportSertifikasi').show();
+    $('#btnToggleAdmin').html('<i class="fas fa-sign-out-alt me-1"></i>Logout').removeClass('btn-outline-warning').addClass('btn-warning text-dark');
+  } else {
+    $('#adminBadge, #btnInputSertifikasi, #btnTemplateSertifikasi, #btnImportSertifikasi').hide();
+    $('#btnToggleAdmin').html('<i class="fas fa-user-lock me-1"></i>Admin Mode').removeClass('btn-warning text-dark').addClass('btn-outline-warning');
+  }
+  if (dtSertifikasi) {
+    renderTabelSertifikasi();
+  }
+}
+
+/**
+ * Login / Logout Admin (terhubung ke endpoint login GAS yang sama dengan index.html)
+ */
+function toggleAdminSession() {
+  if (isAdmin) {
+    Swal.fire({
+      title: 'Logout?',
+      text: 'Anda akan keluar dari Mode Admin',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Ya, Logout',
+      cancelButtonText: 'Batal'
+    }).then(res => {
+      if (res.isConfirmed) {
+        localStorage.removeItem('si_ida_session');
+        localStorage.removeItem('si_ida_timestamp');
+        perbaruiTampilanAdmin();
+        Swal.fire({ icon: 'success', title: 'Logout Berhasil', timer: 1200, showConfirmButton: false });
+      }
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Admin Login',
+    html: `
+      <input type="text" id="swal-username" class="swal2-input" placeholder="Username">
+      <input type="password" id="swal-password" class="swal2-input" placeholder="Password">
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Sign In',
+    confirmButtonColor: '#004d40',
+    showLoaderOnConfirm: true,
+    preConfirm: () => {
+      const username = Swal.getPopup().querySelector('#swal-username').value;
+      const password = Swal.getPopup().querySelector('#swal-password').value;
+      if (!username || !password) {
+        Swal.showValidationMessage('Harap isi username dan password');
+        return false;
+      }
+      const finalUrl = `${SCRIPT_URL_BOS}?action=login&user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}&t=${Date.now()}`;
+      return fetch(finalUrl, { method: 'GET', mode: 'cors', redirect: 'follow' })
+        .then(r => {
+          if (!r.ok) throw new Error('Network error');
+          return r.json();
+        })
+        .catch(() => {
+          Swal.showValidationMessage('Koneksi gagal ke server Apps Script.');
+        });
+    },
+    allowOutsideClick: () => !Swal.isLoading()
+  }).then(result => {
+    if (result && result.isConfirmed && result.value) {
+      if (result.value.success) {
+        localStorage.setItem('si_ida_session', 'true');
+        localStorage.setItem('si_ida_timestamp', String(Date.now()));
+        perbaruiTampilanAdmin();
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Admin Mode aktif', timer: 1300, showConfirmButton: false });
+      } else {
+        Swal.fire('Gagal', result.value.message || 'Username / Password salah', 'error');
+      }
+    }
+  });
+}
+
+/**
+ * Mengekstrak ID Folder Google Drive dari berbagai format URL:
+ * - https://drive.google.com/open?id=FOLDER_ID
+ * - https://drive.google.com/drive/folders/FOLDER_ID
+ * - https://drive.google.com/drive/u/0/folders/FOLDER_ID
+ * - https://drive.google.com/folderview?id=FOLDER_ID
+ * - Atau langsung string ID Folder
+ */
+function extractDriveFolderId(urlOrId) {
+  if (!urlOrId) return '';
+  const str = String(urlOrId).trim();
+  if (!str || str === '-' || str.toLowerCase() === 'null' || str.toLowerCase() === 'undefined') return '';
+
+  const folderPathMatch = str.match(/\/folders\/([a-zA-Z0-9_-]{10,})/);
+  if (folderPathMatch && folderPathMatch[1]) {
+    return folderPathMatch[1];
+  }
+
+  const queryIdMatch = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (queryIdMatch && queryIdMatch[1]) {
+    return queryIdMatch[1];
+  }
+
+  if (/^[a-zA-Z0-9_-]{15,60}$/.test(str) && !str.includes('http') && !str.includes(' ')) {
+    return str;
+  }
+
+  return '';
+}
+
+/**
+ * Normalisasi NIP agar pencocokan antara Sheet DataPegawai dan Sheet Sertifikasi akurat
+ */
+function normalizeNip(nip) {
+  return String(nip || '').replace(/^'/, '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+}
+
+/**
+ * Memproses array headers dan values dari Sheet 'DataPegawai'
+ * Membaca kolom 'Dokumen' baik berupa URL (drive.google.com/open?id=..., /folders/...)
+ * maupun teks label Smart Chip Google Drive (seperti nama folder/pegawai).
+ */
+function parseDataPegawaiSheet(resPegawai) {
+  if (!resPegawai || !Array.isArray(resPegawai.headers) || !Array.isArray(resPegawai.values)) {
+    return [];
+  }
+
+  const headers = resPegawai.headers.map(h => String(h || '').toUpperCase().trim());
+  const idxNip = headers.findIndex(h => h.includes('NIP'));
+  const idxNama = headers.findIndex(h => h.includes('NAMA'));
+  let idxDokumen = headers.findIndex(h => h === 'DOKUMEN');
+  if (idxDokumen === -1) {
+    idxDokumen = headers.findIndex(h => h.includes('DOKUMEN') || h.includes('FOLDER'));
+  }
+
+  return resPegawai.values.map(row => {
+    let rawDokumen = idxDokumen !== -1 ? String(row[idxDokumen] || '').trim() : '';
+    let extractedId = extractDriveFolderId(rawDokumen);
+
+    // Fallback: jika kolom DOKUMEN bukan URL, cek apakah ada kolom lain pada baris ini yang memuat link folder Drive
+    if (!extractedId) {
+      const driveCell = row.find(cell => {
+        const s = String(cell || '').trim();
+        return s.includes('drive.google.com') && (s.includes('/folders/') || s.includes('id='));
+      });
+      if (driveCell) {
+        rawDokumen = String(driveCell).trim();
+        extractedId = extractDriveFolderId(rawDokumen);
+      }
+    }
+
+    const normalizedUrl = rawDokumen.startsWith('http')
+      ? rawDokumen
+      : (extractedId ? `https://drive.google.com/drive/folders/${extractedId}` : '');
+
+    // Deteksi apakah sel kolom Dokumen berisi teks label Smart Chip Drive (misal: "LUKMAN HAKIM")
+    const hasSmartChipLabel = !extractedId && rawDokumen !== '' && rawDokumen !== '-' && !rawDokumen.startsWith('http');
+
+    return {
+      nip: String(row[idxNip !== -1 ? idxNip : 1] || '').replace(/^'/, '').trim(),
+      nama: String(row[idxNama !== -1 ? idxNama : 2] || '').trim(),
+      dokumenRaw: rawDokumen,
+      folderUrl: normalizedUrl,
+      folderId: extractedId,
+      hasSmartChipLabel: hasSmartChipLabel
+    };
+  }).filter(p => p.nama !== '');
+}
+
+/**
+ * Mencari data pegawai di Sheet DataPegawai berdasarkan NIP atau Nama
+ */
+function cariPegawaiDiMaster(nip, nama) {
+  const cleanNip = normalizeNip(nip);
+  const cleanNama = String(nama || '').trim().toLowerCase();
+
+  let found = null;
+  if (cleanNip) {
+    found = daftarPegawai.find(p => normalizeNip(p.nip) === cleanNip);
+  }
+  if (!found && cleanNama) {
+    found = daftarPegawai.find(p => p.nama.toLowerCase() === cleanNama);
+  }
+  return found || null;
+}
+
+/**
+ * Mengisi elemen <datalist id="datalistPegawai"> untuk autocomplete
+ */
+function isiDropdownPegawai() {
+  const optionsHtml = daftarPegawai.map(p => {
+    const label = `${p.nama} (${p.nip || 'Tanpa NIP'})`;
+    const safeVal = label.replace(/"/g, '&quot;');
+    return `<option value="${safeVal}"></option>`;
+  }).join('');
+  $('#datalistPegawai').html(optionsHtml);
+}
+
+/**
+ * Menampilkan status folder Google Drive (kolom Dokumen Sheet DataPegawai) pada modal:
+ * - Hijau: URL / ID folder Drive terbaca langsung
+ * - Biru (Smart Chip): Label Smart Chip folder Drive terdeteksi pada kolom Dokumen, otomatis dicocokkan oleh server saat upload (tanpa memblokir simpan)
+ * - Kuning: Kolom Dokumen masih kosong (tetap bisa simpan tanpa memblokir)
+ */
+function perbaruiInfoFolderPegawai(folderUrl, customFolderId = '', dokumenRaw = '') {
+  const $info = $('#srt_folder_info');
+  if (!$info.length) return;
+
+  const namaVal = $('#srt_nama').val().trim();
+  if (!namaVal) {
+    $info.removeClass('folder-status-ok folder-status-smartchip folder-status-warn').html('').hide();
+    return;
+  }
+
+  const folderId = customFolderId || extractDriveFolderId(folderUrl);
+  const validUrl = folderUrl || (folderId ? `https://drive.google.com/drive/folders/${folderId}` : '');
+  const rawLabel = String(dokumenRaw || $('#srt_dokumen_raw').val() || '').trim();
+
+  if (folderId) {
+    $info
+      .removeClass('folder-status-smartchip folder-status-warn')
+      .addClass('folder-status-ok')
+      .html(
+        `<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">` +
+        `  <span><i class="fas fa-folder-open me-1"></i> <b>Folder Drive Pegawai Terdeteksi</b> (Kolom <code>Dokumen</code> Sheet <code>DataPegawai</code>)</span>` +
+        `  <a href="${validUrl}" target="_blank" class="fw-bold text-success text-decoration-underline"><i class="fas fa-external-link-alt me-1"></i>Buka Folder</a>` +
+        `</div>` +
+        `<div class="mt-1 text-muted" style="font-size:11px;">Folder ID: <code>${folderId}</code></div>`
+      )
+      .show();
+  } else if (rawLabel && rawLabel !== '-') {
+    $info
+      .removeClass('folder-status-ok folder-status-warn')
+      .addClass('folder-status-smartchip')
+      .html(
+        `<i class="fas fa-folder me-1"></i> <b>Smart Chip Folder Terdeteksi:</b> <code>${rawLabel}</code> (Kolom <code>Dokumen</code> Sheet <code>DataPegawai</code>). Berkas yang diunggah akan otomatis diarahkan ke folder Drive pegawai ini di server.`
+      )
+      .show();
+  } else {
+    $info
+      .removeClass('folder-status-ok folder-status-smartchip')
+      .addClass('folder-status-warn')
+      .html(
+        `<i class="fas fa-info-circle me-1"></i> <b>Info Kolom Dokumen:</b> Sel kolom <code>Dokumen</code> di Sheet <code>DataPegawai</code> terlihat kosong; server akan otomatis mencocokkan folder pegawai saat upload.`
+      )
+      .show();
+  }
+}
+
+/**
+ * Mengosongkan pilihan pegawai di modal
+ */
+function resetPilihanPegawai(clearInput = true) {
+  if (clearInput) $('#srt_pegawai_search').val('').focus();
+  $('#srt_nip').val('');
+  $('#srt_nama').val('');
+  $('#srt_folder_url').val('');
+  $('#srt_folder_id').val('');
+  $('#srt_dokumen_raw').val('');
+  perbaruiInfoFolderPegawai('', '', '');
+}
+
+/**
+ * Memuat data pegawai (Sheet DataPegawai) dan riwayat sertifikasi secara paralel
+ */
+async function muatSemuaData(forceRefresh = false) {
+  $('#loader-bar').css('width', '35%');
+
+  if (!forceRefresh) {
+    try {
+      const cachedRaw = localStorage.getItem(PEGAWAI_CACHE_KEY);
+      if (cachedRaw) {
+        const parsedCache = JSON.parse(cachedRaw);
+        const cachedList = parseDataPegawaiSheet(parsedCache);
+        if (cachedList.length > 0) {
+          daftarPegawai = cachedList;
+          isiDropdownPegawai();
+        }
+      }
+    } catch (e) {}
+  }
+
+  try {
+    const [resPegawai, resSertifikasi] = await Promise.all([
+      fetch(`${SCRIPT_URL_BOS}?t=${Date.now()}`).then(r => r.json()),
+      fetch(`${SCRIPT_URL_BOS}?action=getSertifikasi&t=${Date.now()}`).then(r => r.json())
+    ]);
+
+    $('#loader-bar').css('width', '80%');
+
+    if (resPegawai && Array.isArray(resPegawai.headers) && Array.isArray(resPegawai.values)) {
+      daftarPegawai = parseDataPegawaiSheet(resPegawai);
+      isiDropdownPegawai();
+      try {
+        localStorage.setItem(PEGAWAI_CACHE_KEY, JSON.stringify({
+          headers: resPegawai.headers,
+          values: resPegawai.values
+        }));
+      } catch (e) {}
+    }
+
+    if (resSertifikasi && Array.isArray(resSertifikasi.values)) {
+      dataSertifikasi = resSertifikasi.values.map((row, idx) => ({
+        rowIndex: idx + 2,
+        id: String(row[0] || `SRT-${idx + 1}`).trim(),
+        nip: String(row[1] || '').replace(/^'/, '').trim(),
+        nama: String(row[2] || '').trim(),
+        jenis: String(row[3] || '-').trim(),
+        nomor: String(row[4] || '-').trim(),
+        judul: String(row[5] || '-').trim(),
+        penyelenggara: String(row[6] || '-').trim(),
+        tanggal: formatTanggalInput(row[7]),
+        tanggalTampil: formatTanggalIndo(row[7]),
+        jp: parseFloat(row[8]) || 0,
+        link: String(row[9] || '').trim()
+      }));
+    } else {
+      dataSertifikasi = [];
+    }
+
+    isiFilterTahun();
+    perbaruiStatistik();
+    renderTabelSertifikasi();
+
+    // Cek prefill parameter URL (?nip=...&nama=...) apabila diarahkan dari halaman DRH index.html
+    cekPrefillUrlParams();
+
+    $('#loader-bar').css('width', '100%');
+    setTimeout(() => $('#loader-bar').css('width', '0%'), 400);
+  } catch (err) {
+    console.error('Gagal memuat data:', err);
+    $('#loader-bar').css('width', '0%');
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal Memuat Data',
+      text: 'Tidak dapat terhubung ke server Google Apps Script. Periksa koneksi internet atau deployment GAS.',
+      confirmButtonColor: '#004d40'
+    });
+  }
+}
+
+let prefillSudahDiproses = false;
+function cekPrefillUrlParams() {
+  if (prefillSudahDiproses) return;
+  const params = new URLSearchParams(window.location.search);
+  const nipParam = params.get('nip');
+  const namaParam = params.get('nama');
+  if (nipParam || namaParam) {
+    prefillSudahDiproses = true;
+    if (isAdmin) {
+      bukaModalTambah(nipParam || '', namaParam || '');
+    } else {
+      $('#filterSearch').val(namaParam || nipParam || '').trigger('input');
+    }
+  }
+}
+
+function formatTanggalIndo(val) {
+  if (!val) return '-';
+  const d = new Date(val);
+  if (isNaN(d.getTime())) return String(val);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+function formatTanggalInput(val) {
+  if (!val) return '';
+  const str = String(val).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) return str.substring(0, 10);
+  const d = new Date(str);
+  if (isNaN(d.getTime())) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function isiFilterTahun() {
+  const tahunSet = new Set();
+  dataSertifikasi.forEach(item => {
+    if (item.tanggal && item.tanggal.length >= 4) {
+      tahunSet.add(item.tanggal.substring(0, 4));
+    }
+  });
+  const sortedYears = Array.from(tahunSet).sort((a, b) => b.localeCompare(a));
+  const currentVal = $('#filterTahun').val();
+  let html = '<option value="">Semua Tahun</option>';
+  sortedYears.forEach(yr => {
+    html += `<option value="${yr}">${yr}</option>`;
+  });
+  $('#filterTahun').html(html);
+  if (currentVal) $('#filterTahun').val(currentVal);
+}
+
+function getFilteredSertifikasi() {
+  const q = ($('#filterSearch').val() || '').trim().toLowerCase();
+  const fJenis = ($('#filterJenis').val() || '').trim();
+  const fTahun = ($('#filterTahun').val() || '').trim();
+
+  return dataSertifikasi.filter(item => {
+    if (fJenis && item.jenis !== fJenis) return false;
+    if (fTahun && (!item.tanggal || !item.tanggal.startsWith(fTahun))) return false;
+    if (q) {
+      const gabung = `${item.nama} ${item.nip} ${item.judul} ${item.nomor} ${item.penyelenggara} ${item.jenis}`.toLowerCase();
+      if (!gabung.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function perbaruiStatistik() {
+  const filtered = getFilteredSertifikasi();
+  const tahunIni = String(new Date().getFullYear());
+
+  const totalSertifikat = filtered.length;
+  const pegawaiUnik = new Set(filtered.map(i => normalizeNip(i.nip) || i.nama.toLowerCase()).filter(Boolean)).size;
+  const totalJP = filtered.reduce((acc, cur) => acc + (Number(cur.jp) || 0), 0);
+  const kegTahunIni = filtered.filter(i => i.tanggal && i.tanggal.startsWith(tahunIni)).length;
+
+  $('#stat-total-sertifikat').text(totalSertifikat);
+  $('#stat-total-pegawai').text(pegawaiUnik);
+  $('#stat-total-jp').text(`${totalJP} JP`);
+  $('#stat-tahun-ini').text(kegTahunIni);
+}
+
+function getDirectDownloadUrl(url) {
+  if (!url) return '';
+  const fileMatch = url.match(/\/file\/d\/([-\w]{20,})/) || url.match(/[?&]id=([-\w]{20,})/);
+  if (fileMatch && fileMatch[1] && !url.includes('/folders/')) {
+    return `https://drive.google.com/uc?export=download&id=${fileMatch[1]}`;
+  }
+  return url;
+}
+
+function getDrivePreviewUrl(url) {
+  if (!url) return '';
+  const fileMatch = url.match(/\/file\/d\/([-\w]{20,})/) || url.match(/[?&]id=([-\w]{20,})/);
+  if (fileMatch && fileMatch[1] && !url.includes('/folders/')) {
+    return `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+  }
+  return url;
+}
+
+function previewBerkasSertifikat(link, judul) {
+  const previewUrl = getDrivePreviewUrl(link);
+  const dlUrl = getDirectDownloadUrl(link);
+  Swal.fire({
+    title: `<span style="color:#004d40; font-weight:800; font-size:16px;"><i class="fas fa-file-alt me-2"></i>Preview: ${judul || 'Sertifikat'}</span>`,
+    width: '860px',
+    html: `
+      <div style="border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; height:490px; background:#f8fafc;">
+        <iframe src="${previewUrl}" width="100%" height="100%" style="border:none;" allow="autoplay"></iframe>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: '<i class="fas fa-download me-1"></i> Unduh Berkas',
+    cancelButtonText: 'Tutup',
+    confirmButtonColor: '#059669'
+  }).then(res => {
+    if (res.isConfirmed) {
+      window.open(dlUrl, '_blank');
+    }
+  });
+}
+
+function renderTabelSertifikasi() {
+  const filtered = getFilteredSertifikasi();
+
+  if (dtSertifikasi) {
+    dtSertifikasi.destroy();
+    dtSertifikasi = null;
+  }
+
+  const tbodyHtml = filtered.map((item, idx) => {
+    const pegawaiInfo = cariPegawaiDiMaster(item.nip, item.nama);
+    const hasFolder = pegawaiInfo && pegawaiInfo.folderId;
+    const folderBadge = hasFolder
+      ? `<a href="${pegawaiInfo.folderUrl}" target="_blank" class="badge bg-success bg-opacity-10 text-success text-decoration-none mt-1" title="Folder Drive Pegawai (Kolom Dokumen)"><i class="fas fa-folder-open me-1"></i>Folder Drive</a>`
+      : '';
+
+    const link = item.link;
+    const judulEsc = item.judul.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const dlUrl = getDirectDownloadUrl(link);
+
+    const berkasHtml = link && link.startsWith('http')
+      ? `<div class="cert-action-group">
+           <button type="button" onclick="previewBerkasSertifikat('${link}', '${judulEsc}')" class="btn-cert-view border-0"><i class="fas fa-eye"></i>Preview</button>
+           <a href="${dlUrl}" target="_blank" download class="btn-cert-dl"><i class="fas fa-arrow-down"></i>Unduh</a>
+         </div>`
+      : '<span class="badge bg-light text-muted border">Belum ada file</span>';
+
+    const aksiHtml = isAdmin
+      ? `<div class="text-nowrap">
+           <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2 me-1" onclick="bukaModalEdit('${item.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+           <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2" onclick="hapusSertifikasi('${item.id}')" title="Hapus"><i class="fas fa-trash"></i></button>
+         </div>`
+      : '<span class="text-muted small">-</span>';
+
+    return `
+      <tr>
+        <td class="text-center fw-bold text-muted">${idx + 1}</td>
+        <td>
+          <div class="fw-bold text-dark">${item.nama || '-'}</div>
+          <div class="small text-muted font-monospace">NIP. ${item.nip || '-'}</div>
+          ${folderBadge}
+        </td>
+        <td><span class="badge-jenis">${item.jenis}</span></td>
+        <td>
+          <div class="fw-semibold text-dark">${item.judul}</div>
+          <div class="small text-muted">No: ${item.nomor}</div>
+        </td>
+        <td>${item.penyelenggara}</td>
+        <td class="text-nowrap">${item.tanggalTampil}</td>
+        <td class="text-center fw-bold text-success">${item.jp} JP</td>
+        <td class="text-center">${berkasHtml}</td>
+        <td class="text-center">${aksiHtml}</td>
+      </tr>
+    `;
+  }).join('');
+
+  $('#sertifikasiTable tbody').html(tbodyHtml);
+
+  dtSertifikasi = $('#sertifikasiTable').DataTable({
+    pageLength: 10,
+    language: {
+      search: "Filter Tabel:",
+      zeroRecords: "Belum ada data sertifikasi / diklat ditemukan",
+      info: "Menampilkan _START_ - _END_ dari _TOTAL_ sertifikat",
+      infoEmpty: "Tidak ada data",
+      paginate: { previous: "Sebelumnya", next: "Berikutnya" }
+    }
+  });
+}
+
+function resetFilter() {
+  $('#filterSearch').val('');
+  $('#filterJenis').val('');
+  $('#filterTahun').val('');
+  perbaruiStatistik();
+  renderTabelSertifikasi();
+}
+
+/**
+ * Membuka Modal Input Sertifikasi Baru (mendukung prefill ?nip=...&nama=...)
+ */
+function bukaModalTambah(prefillNip = '', prefillNama = '') {
+  if (!isAdmin) {
+    Swal.fire('Akses Terbatas', 'Silakan login sebagai Admin terlebih dahulu.', 'warning');
+    return;
+  }
+
+  $('#formSertifikat')[0].reset();
+  $('#srt_id').val('');
+  $('#srt_existing_link').val('');
+  $('#srt_folder_url').val('');
+  $('#srt_folder_id').val('');
+  $('#srt_dokumen_raw').val('');
+  $('#srt_existing_file_note').text('');
+  $('#srt_folder_info').removeClass('folder-status-ok folder-status-smartchip folder-status-warn').html('').hide();
+  $('#modalSertifikatTitle').html('<i class="fas fa-award me-2"></i>Input Riwayat Sertifikasi / Diklat');
+
+  if (prefillNip || prefillNama) {
+    const found = cariPegawaiDiMaster(prefillNip, prefillNama);
+    if (found) {
+      $('#srt_pegawai_search').val(`${found.nama} (${found.nip || 'Tanpa NIP'})`).trigger('change');
+    } else {
+      $('#srt_pegawai_search').val(prefillNama || prefillNip || '');
+      $('#srt_nip').val(prefillNip || '');
+      $('#srt_nama').val(prefillNama || '');
+      perbaruiInfoFolderPegawai('', '', '');
+    }
+  }
+
+  $('#modalSertifikat').modal('show');
+}
+
+/**
+ * Membuka Modal Edit Sertifikasi
+ */
+function bukaModalEdit(id) {
+  if (!isAdmin) return;
+  const item = dataSertifikasi.find(s => s.id === id);
+  if (!item) return;
+
+  $('#formSertifikat')[0].reset();
+  $('#srt_id').val(item.id);
+  $('#srt_existing_link').val(item.link || '');
+  $('#modalSertifikatTitle').html('<i class="fas fa-edit me-2"></i>Edit Riwayat Sertifikasi / Diklat');
+
+  const found = cariPegawaiDiMaster(item.nip, item.nama);
+  if (found) {
+    $('#srt_pegawai_search').val(`${found.nama} (${found.nip || 'Tanpa NIP'})`).trigger('change');
+  } else {
+    $('#srt_pegawai_search').val(item.nama || item.nip || '');
+    $('#srt_nip').val(item.nip);
+    $('#srt_nama').val(item.nama);
+    $('#srt_folder_url').val('');
+    $('#srt_folder_id').val('');
+    $('#srt_dokumen_raw').val('');
+    perbaruiInfoFolderPegawai('', '', '');
+  }
+
+  $('#srt_jenis').val(item.jenis);
+  $('#srt_nomor').val(item.nomor);
+  $('#srt_judul').val(item.judul);
+  $('#srt_penyelenggara').val(item.penyelenggara);
+  $('#srt_tanggal').val(item.tanggal);
+  $('#srt_jp').val(item.jp);
+
+  if (item.link) {
+    $('#srt_existing_file_note').html(`<i class="fas fa-paperclip text-success me-1"></i>Berkas saat ini sudah tersimpan. Biarkan kosong jika tidak ingin mengganti file.`);
+  } else {
+    $('#srt_existing_file_note').text('');
+  }
+
+  $('#modalSertifikat').modal('show');
+}
+
+/**
+ * Membaca file menjadi Base64 murni (tanpa prefix data:...;base64,)
+ */
+function fileToBase64Clean(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const base64Only = result.includes(',') ? result.split(',')[1] : result;
+      resolve(base64Only);
+    };
+    reader.onerror = err => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
+function safeJenisName(jenis) {
+  return String(jenis || 'Diklat').replace(/[^a-zA-Z0-9]+/g, '_');
+}
+
+/**
+ * Submit Form Sertifikasi:
+ * Tidak memblokir jika sel kolom Dokumen berbentuk Smart Chip label (seperti nama pegawai),
+ * sehingga upload tetap berjalan dan backend GAS otomatis mengambil link Smart Chip dari Sheet DataPegawai.
+ */
+$('#formSertifikat').on('submit', async function(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const id = $('#srt_id').val().trim();
+  const nip = $('#srt_nip').val().trim();
+  const nama = $('#srt_nama').val().trim();
+  const jenis = $('#srt_jenis').val().trim();
+  const nomor = $('#srt_nomor').val().trim();
+  const judul = $('#srt_judul').val().trim();
+  const penyelenggara = $('#srt_penyelenggara').val().trim();
+  const tanggal = $('#srt_tanggal').val().trim();
+  const jp = parseFloat($('#srt_jp').val()) || 0;
+  const existingLink = $('#srt_existing_link').val().trim();
+
+  if (!nama) {
+    Swal.fire('Pegawai Belum Dipilih', 'Silakan ketik dan pilih nama pegawai dari daftar Sheet DataPegawai.', 'warning');
+    return;
+  }
+
+  let folderUrl = $('#srt_folder_url').val().trim();
+  let folderId = $('#srt_folder_id').val().trim() || extractDriveFolderId(folderUrl);
+
+  if (!folderId) {
+    const matchedPegawai = cariPegawaiDiMaster(nip, nama);
+    if (matchedPegawai && matchedPegawai.folderId) {
+      folderUrl = matchedPegawai.folderUrl;
+      folderId = matchedPegawai.folderId;
+    }
+  }
+
+  const fileInput = document.getElementById('srt_file');
+  const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+  if (file) {
+    const maxBytes = 5 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      Swal.fire('Ukuran File Terlalu Besar', 'Maksimal ukuran file sertifikat adalah 5 MB.', 'warning');
+      return;
+    }
+  }
+
+  Swal.fire({
+    title: 'Menyimpan Riwayat...',
+    html: file
+      ? (folderId
+          ? `Mengunggah berkas ke folder Drive pegawai (<code>${folderId}</code>)...`
+          : `Mengunggah berkas dan mencocokkan folder Drive pegawai (<code>${nama}</code>) di server...`)
+      : 'Menyimpan data sertifikasi ke spreadsheet...',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  try {
+    let base64Data = '';
+    let fileName = '';
+    let mimeType = '';
+
+    if (file) {
+      base64Data = await fileToBase64Clean(file);
+      const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
+      const safeJudul = judul.replace(/[^a-zA-Z0-9_-]+/g, '_').substring(0, 40);
+      const safeNama = nama.replace(/[^a-zA-Z0-9_-]+/g, '_').substring(0, 30);
+      fileName = `Sertifikat_${safeJenisName(jenis)}_${safeNama}_${safeJudul}${ext}`;
+      mimeType = file.type || 'application/pdf';
+    }
+
+    const payload = {
+      action: 'saveSertifikasi',
+      id: id,
+      nip: nip,
+      nama: nama,
+      jenis: jenis,
+      nomor: nomor,
+      judul: judul,
+      penyelenggara: penyelenggara,
+      tanggal: tanggal,
+      jp: jp,
+      existingLink: existingLink,
+      // Target Folder dari Kolom 'Dokumen' Sheet 'DataPegawai'
+      folderUrl: folderUrl,
+      folderId: folderId,
+      targetFolderId: folderId,
+      parentFolderId: folderId,
+      dokumenFolderUrl: folderUrl,
+      // Data Berkas
+      base64Data: base64Data,
+      fileName: fileName,
+      mimeType: mimeType
+    };
+
+    const response = await fetch(SCRIPT_URL_BOS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    let resJson = null;
+    try {
+      resJson = await response.json();
+    } catch (parseErr) {}
+
+    if (resJson && (resJson.success === false || resJson.status === 'error')) {
+      throw new Error(resJson.message || 'Gagal menyimpan data di server GAS.');
+    }
+
+    $('#modalSertifikat').modal('hide');
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil Disimpan!',
+      text: file
+        ? 'Sertifikat berhasil diunggah ke folder Google Drive pegawai (kolom Dokumen DataPegawai).'
+        : 'Data riwayat sertifikasi berhasil diperbarui.',
+      timer: 2000,
+      showConfirmButton: false
+    });
+
+    setTimeout(() => muatSemuaData(true), 900);
+  } catch (err) {
+    console.error('Error submit sertifikat:', err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal Menyimpan',
+      text: err.message || 'Terjadi kesalahan saat mengirim data ke Google Apps Script.',
+      confirmButtonColor: '#d33'
+    });
+  }
+});
+
+/**
+ * Menghapus data sertifikasi (khusus Admin)
+ */
+function hapusSertifikasi(id) {
+  if (!isAdmin) return;
+  const item = dataSertifikasi.find(s => s.id === id);
+  if (!item) return;
+
+  Swal.fire({
+    title: 'Hapus Riwayat Sertifikasi?',
+    text: `Sertifikat "${item.judul}" milik ${item.nama} akan dihapus dari daftar.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Ya, Hapus',
+    cancelButtonText: 'Batal'
+  }).then(async res => {
+    if (res.isConfirmed) {
+      Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      try {
+        await fetch(SCRIPT_URL_BOS, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'deleteSertifikat',
+            id: item.id,
+            rowIndex: item.rowIndex
+          })
+        });
+        Swal.fire({ icon: 'success', title: 'Terhapus!', timer: 1400, showConfirmButton: false });
+        setTimeout(() => muatSemuaData(true), 700);
+      } catch (e) {
+        Swal.fire('Gagal', 'Tidak dapat menghapus data sertifikasi.', 'error');
+      }
+    }
+  });
+}
+
+/**
+ * Download Template Excel untuk Import Massal Sertifikasi
+ */
+function downloadTemplateSertifikasiExcel() {
+  if (typeof XLSX === 'undefined') {
+    Swal.fire('Error', 'Library Excel belum dimuat.', 'error');
+    return;
+  }
+  const sampleData = [
+    {
+      NIP: "198501012010011001",
+      NAMA: "Contoh Nama Pegawai",
+      JENIS: "Diklat Teknis",
+      NOMOR: "001/DIKLAT/2026",
+      JUDUL: "Pelatihan Kepemimpinan Administrator",
+      PENYELENGGARA: "Pusdiklat Kemenag RI",
+      TANGGAL: "2026-05-15",
+      JP: 40,
+      LINK_SERTIFIKAT: ""
+    }
+  ];
+  const ws = XLSX.utils.json_to_sheet(sampleData);
+  ws['!cols'] = [
+    { wch: 22 }, { wch: 28 }, { wch: 22 }, { wch: 22 },
+    { wch: 36 }, { wch: 26 }, { wch: 14 }, { wch: 8 }, { wch: 32 }
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "TemplateSertifikasi");
+  XLSX.writeFile(wb, "Template_Import_Sertifikasi_Pegawai.xlsx");
+}
+
+/**
+ * Import Excel Massal & otomatis menautkan folderUrl/folderId dari kolom Dokumen Sheet DataPegawai
+ */
+function handleImportSertifikasiExcel(input) {
+  if (!isAdmin) return;
+  const file = input.files && input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+
+      if (!rows || rows.length === 0) {
+        input.value = '';
+        Swal.fire('File Kosong', 'Tidak ada data di dalam file Excel.', 'warning');
+        return;
+      }
+
+      const items = rows.map(r => {
+        const nip = String(r.NIP || r.nip || '').replace(/^'/, '').trim();
+        const nama = String(r.NAMA || r.nama || '').trim();
+        const matched = cariPegawaiDiMaster(nip, nama);
+        return {
+          nip: nip || (matched ? matched.nip : ''),
+          nama: nama || (matched ? matched.nama : ''),
+          jenis: String(r.JENIS || r.jenis || 'Diklat Teknis').trim(),
+          nomor: String(r.NOMOR || r.nomor || '-').trim(),
+          judul: String(r.JUDUL || r.judul || '').trim(),
+          penyelenggara: String(r.PENYELENGGARA || r.penyelenggara || '-').trim(),
+          tanggal: formatTanggalInput(r.TANGGAL || r.tanggal || ''),
+          jp: parseFloat(r.JP || r.jp || 0) || 0,
+          link: String(r.LINK_SERTIFIKAT || r.link || '').trim(),
+          folderUrl: matched ? matched.folderUrl : '',
+          folderId: matched ? matched.folderId : ''
+        };
+      }).filter(it => it.nama && it.judul);
+
+      if (items.length === 0) {
+        input.value = '';
+        Swal.fire('Format Tidak Sesuai', 'Pastikan kolom Excel memiliki minimal kolom NAMA dan JUDUL.', 'warning');
+        return;
+      }
+
+      Swal.fire({
+        title: `Import ${items.length} Data Sertifikasi?`,
+        text: 'Data akan langsung ditambahkan ke riwayat sertifikasi pegawai.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Proses Import',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#004d40'
+      }).then(async res => {
+        input.value = '';
+        if (res.isConfirmed) {
+          Swal.fire({ title: 'Mengimport...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+          try {
+            for (const item of items) {
+              await fetch(SCRIPT_URL_BOS, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                  action: 'saveSertifikasi',
+                  nip: item.nip,
+                  nama: item.nama,
+                  jenis: item.jenis,
+                  nomor: item.nomor,
+                  judul: item.judul,
+                  penyelenggara: item.penyelenggara,
+                  tanggal: item.tanggal,
+                  jp: item.jp,
+                  existingLink: item.link,
+                  folderUrl: item.folderUrl,
+                  folderId: item.folderId
+                })
+              });
+            }
+            Swal.fire({ icon: 'success', title: 'Import Berhasil!', timer: 1500, showConfirmButton: false });
+            setTimeout(() => muatSemuaData(true), 1000);
+          } catch (err) {
+            Swal.fire('Gagal', 'Terjadi kesalahan saat mengimport data.', 'error');
+          }
+        }
+      });
+    } catch (err) {
+      input.value = '';
+      Swal.fire('File Tidak Valid', 'Pastikan file berformat .xlsx atau .xls.', 'error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/**
+ * Modal Rekap & Analisis Sertifikasi (Per Jenis & Per Pegawai)
+ */
+function bukaRekapAnalisis() {
+  const filtered = getFilteredSertifikasi();
+  if (filtered.length === 0) {
+    Swal.fire('Data Kosong', 'Belum ada data sertifikasi untuk dianalisis.', 'info');
+    return;
+  }
+
+  const jenisMap = {};
+  const pegawaiMap = {};
+
+  filtered.forEach(item => {
+    jenisMap[item.jenis] = (jenisMap[item.jenis] || 0) + 1;
+    const key = `${item.nama} (${item.nip || '-'})`;
+    if (!pegawaiMap[key]) {
+      pegawaiMap[key] = { nama: item.nama, nip: item.nip, jumlah: 0, jp: 0 };
+    }
+    pegawaiMap[key].jumlah += 1;
+    pegawaiMap[key].jp += (Number(item.jp) || 0);
+  });
+
+  const topPegawai = Object.values(pegawaiMap).sort((a, b) => b.jp - a.jp || b.jumlah - a.jumlah);
+  const rowsHtml = topPegawai.map((p, idx) => `
+    <tr>
+      <td class="text-center">${idx + 1}</td>
+      <td class="fw-bold">${p.nama}</td>
+      <td class="font-monospace small">${p.nip || '-'}</td>
+      <td class="text-center">${p.jumlah}</td>
+      <td class="text-center fw-bold text-success">${p.jp} JP</td>
+    </tr>
+  `).join('');
+
+  Swal.fire({
+    title: '<span style="color:#004d40; font-weight:800; font-size:18px;"><i class="fas fa-chart-pie me-2"></i>Rekap & Analisis Sertifikasi</span>',
+    width: '880px',
+    html: `
+      <div class="row g-3 text-start mt-1">
+        <div class="col-md-5">
+          <div class="p-3 border rounded-4 bg-light h-100">
+            <h6 class="fw-bold text-dark small text-uppercase mb-3">Komposisi Jenis Kegiatan</h6>
+            <div style="height:230px;"><canvas id="chartJenisSertifikasi"></canvas></div>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="p-3 border rounded-4 bg-white h-100">
+            <h6 class="fw-bold text-dark small text-uppercase mb-2">Rekapitulasi JP Per Pegawai</h6>
+            <div class="table-responsive" style="max-height:240px;">
+              <table class="table table-sm table-bordered m-0" style="font-size:12px;">
+                <thead class="table-light">
+                  <tr><th class="text-center">No</th><th>Nama Pegawai</th><th>NIP</th><th class="text-center">Sertifikat</th><th class="text-center">Total JP</th></tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+    confirmButtonText: 'Tutup',
+    confirmButtonColor: '#004d40',
+    didOpen: () => {
+      const ctx = document.getElementById('chartJenisSertifikasi').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(jenisMap),
+          datasets: [{
+            data: Object.values(jenisMap),
+            backgroundColor: ['#004d40', '#ffb74d', '#0288d1', '#10b981', '#8b5cf6', '#f43f5e']
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }
+        }
+      });
+    }
+  });
+}
+
+/**
+ * Cetak Laporan PDF Sertifikasi Terfilter
+ */
+function cetakPDFSertifikasi() {
+  const filtered = getFilteredSertifikasi();
+  if (filtered.length === 0) {
+    Swal.fire('Data Kosong', 'Tidak ada data sertifikasi untuk dicetak.', 'info');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('l', 'mm', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const tglCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text("REKAPITULASI SERTIFIKASI & DIKLAT PEGAWAI", pageWidth / 2, 15, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.text(`Total Data: ${filtered.length} Sertifikat`, pageWidth / 2, 20.5, { align: "center" });
+
+  const body = filtered.map((item, i) => [
+    i + 1,
+    `${item.nama}\nNIP. ${item.nip || '-'}`,
+    item.jenis,
+    `${item.judul}\nNo: ${item.nomor}`,
+    item.penyelenggara,
+    item.tanggalTampil,
+    `${item.jp} JP`
+  ]);
+
+  doc.autoTable({
+    head: [['No', 'Nama & NIP Pegawai', 'Jenis', 'Judul & Nomor Sertifikat', 'Penyelenggara', 'Tanggal', 'JP']],
+    body: body,
+    startY: 25,
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 2.5, valign: 'middle' },
+    headStyles: { fillColor: [0, 77, 64], textColor: [255, 255, 255], halign: 'center' },
+    columnStyles: {
+      0: { halign: 'center', cellWidth: 10 },
+      5: { halign: 'center', cellWidth: 25 },
+      6: { halign: 'center', cellWidth: 18 }
+    },
+    didDrawPage: function() {
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text(`Dicetak: ${tglCetak}`, pageWidth - 14, pageHeight - 8, { align: "right" });
+    }
+  });
+
+  const pdfUrl = doc.output('bloburl');
+  Swal.fire({
+    title: '<span style="color:#004d40; font-weight:800; font-size:16px;"><i class="fas fa-file-pdf text-danger me-2"></i>Preview Laporan Sertifikasi</span>',
+    width: '920px',
+    html: `<div style="border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; height:480px;"><iframe src="${pdfUrl}" width="100%" height="100%" style="border:none;"></iframe></div>`,
+    showCancelButton: true,
+    confirmButtonText: '<i class="fas fa-download me-1"></i> Unduh PDF',
+    cancelButtonText: 'Tutup',
+    confirmButtonColor: '#004d40'
+  }).then(res => {
+    if (res.isConfirmed) {
+      doc.save(`Laporan_Sertifikasi_Pegawai_${Date.now()}.pdf`);
+    }
+  });
+}
+
+$(document).ready(function() {
+  perbaruiTampilanAdmin();
+  muatSemuaData(false);
+
+  // Event pencarian & filter real-time
+  $('#filterSearch').on('input', function() {
+    perbaruiStatistik();
+    renderTabelSertifikasi();
+  });
+  $('#filterJenis, #filterTahun').on('change', function() {
+    perbaruiStatistik();
+    renderTabelSertifikasi();
+  });
+
+  // Autocomplete pegawai & deteksi otomatis folder kolom 'Dokumen' di Sheet 'DataPegawai'
+  $('#srt_pegawai_search').on('input change', function() {
+    const val = $(this).val().trim();
+    if (!val) {
+      resetPilihanPegawai(false);
+      return;
+    }
+
+    const qLower = val.toLowerCase();
+    let p = daftarPegawai.find(item => `${item.nama} (${item.nip || 'Tanpa NIP'})`.toLowerCase() === qLower) ||
+            daftarPegawai.find(item => item.nama.toLowerCase() === qLower || (item.nip && item.nip.toLowerCase() === qLower));
+
+    if (!p && val.length >= 3) {
+      const matches = daftarPegawai.filter(item =>
+        item.nama.toLowerCase().includes(qLower) || (item.nip && item.nip.toLowerCase().includes(qLower))
+      );
+      if (matches.length === 1) {
+        p = matches[0];
+      }
+    }
+
+    if (p) {
+      $('#srt_nip').val(p.nip);
+      $('#srt_nama').val(p.nama);
+      $('#srt_folder_url').val(p.folderUrl || '');
+      $('#srt_folder_id').val(p.folderId || '');
+      $('#srt_dokumen_raw').val(p.dokumenRaw || '');
+      perbaruiInfoFolderPegawai(p.folderUrl || '', p.folderId || '', p.dokumenRaw || '');
+    } else {
+      $('#srt_nip').val('');
+      $('#srt_nama').val('');
+      $('#srt_folder_url').val('');
+      $('#srt_folder_id').val('');
+      $('#srt_dokumen_raw').val('');
+      perbaruiInfoFolderPegawai('', '', '');
+    }
+  });
+});
+</script>
+</body>
+</html>
